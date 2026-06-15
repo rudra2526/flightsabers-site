@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FlightSabers LLC — Electric Aviation Infrastructure</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --navy: #0a0f1e;
+    --navy2: #0d1526;
+    --navy3: #111d35;
+    --blue: #1a6fd4;
+    --blue2: #2181f0;
+    --blue3: #4fa3ff;
+    --blue4: #a8d4ff;
+    --white: #f0f6ff;
+    --gray: #8899bb;
+    --border: rgba(26,111,212,0.25);
+  }
+  html { scroll-behavior: smooth; }
+  body { background: var(--navy); color: var(--white); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.25rem 4rem;
+    background: rgba(10,15,30,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 0.5px solid var(--border);
+  }
+  .nav-logo {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 20px; font-weight: 700; color: var(--white); text-decoration: none; letter-spacing: -0.3px;
+  }
+  .logo-icon {
+    width: 36px; height: 36px;
+    background: var(--blue);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .logo-icon svg { width: 20px; height: 20px; fill: white; }
+  .nav-links { display: flex; align-items: center; gap: 2.5rem; }
+  .nav-links a { color: var(--gray); text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--white); }
+  .nav-cta {
+    background: var(--blue); color: white; padding: 0.5rem 1.25rem;
+    border-radius: 6px; font-size: 14px; font-weight: 600; text-decoration: none;
+    transition: background 0.2s;
+  }
+  .nav-cta:hover { background: var(--blue2); color: white; }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 8rem 2rem 6rem;
+    position: relative; overflow: hidden;
+    background: linear-gradient(180deg, rgba(10,15,30,0.62) 0%, rgba(10,15,30,0.72) 55%, var(--navy) 100%), url('images/hero.jpg') center 65%/cover no-repeat;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 30%, rgba(26,111,212,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(26,111,212,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(26,111,212,0.06) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(26,111,212,0.12); border: 0.5px solid rgba(26,111,212,0.4);
+    color: var(--blue3); padding: 0.4rem 1rem; border-radius: 100px;
+    font-size: 13px; font-weight: 500; margin-bottom: 2rem;
+    position: relative;
+  }
+  .badge-dot { width: 6px; height: 6px; background: var(--blue3); border-radius: 50%; }
+  .hero h1 {
+    font-size: clamp(2.8rem, 6vw, 5.5rem);
+    font-weight: 800; line-height: 1.08; letter-spacing: -1.5px;
+    color: var(--white); max-width: 900px; margin-bottom: 1.5rem;
+    position: relative;
+  }
+  .hero h1 span { color: var(--blue3); }
+  .hero-sub {
+    font-size: clamp(1rem, 2vw, 1.2rem); color: var(--gray);
+    max-width: 620px; margin-bottom: 3rem; line-height: 1.7; position: relative;
+  }
+  .hero-actions { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; justify-content: center; position: relative; }
+  .btn-primary {
+    background: var(--blue); color: white;
+    padding: 0.85rem 2rem; border-radius: 8px;
+    font-size: 15px; font-weight: 600; text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn-primary:hover { background: var(--blue2); transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent; color: var(--white);
+    border: 0.5px solid var(--border); padding: 0.85rem 2rem;
+    border-radius: 8px; font-size: 15px; font-weight: 500; text-decoration: none;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .btn-secondary:hover { border-color: var(--blue); background: rgba(26,111,212,0.08); }
+
+  /* STATS */
+  .stats-bar {
+    background: var(--navy2); border-top: 0.5px solid var(--border); border-bottom: 0.5px solid var(--border);
+    padding: 2.5rem 4rem;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; text-align: center;
+  }
+  .stat-item {}
+  .stat-number { font-size: 2.2rem; font-weight: 800; color: var(--blue3); letter-spacing: -1px; }
+  .stat-label { font-size: 13px; color: var(--gray); margin-top: 4px; }
+
+  /* SECTIONS */
+  section { padding: 6rem 4rem; }
+  .section-badge {
+    display: inline-block; background: rgba(26,111,212,0.1); border: 0.5px solid var(--border);
+    color: var(--blue3); padding: 0.35rem 0.85rem; border-radius: 100px;
+    font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em;
+    margin-bottom: 1.25rem;
+  }
+  .section-title { font-size: clamp(1.8rem, 3.5vw, 2.8rem); font-weight: 800; letter-spacing: -0.8px; margin-bottom: 1rem; line-height: 1.15; }
+  .section-title span { color: var(--blue3); }
+  .section-sub { font-size: 1.05rem; color: var(--gray); max-width: 580px; line-height: 1.7; }
+
+  /* PROBLEM */
+  .problem { background: var(--navy2); }
+  .problem-inner { max-width: 1100px; margin: 0 auto; }
+  .problem-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; margin-top: 3.5rem; }
+  .problem-cards { display: flex; flex-direction: column; gap: 1rem; }
+  .problem-card {
+    background: var(--navy3); border: 0.5px solid var(--border);
+    border-radius: 12px; padding: 1.5rem;
+    display: flex; gap: 1.25rem; align-items: flex-start;
+    transition: border-color 0.2s;
+  }
+  .problem-card:hover { border-color: var(--blue); }
+  .problem-icon {
+    width: 44px; height: 44px; background: rgba(26,111,212,0.15); border-radius: 10px;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .problem-icon svg { width: 22px; height: 22px; stroke: var(--blue3); fill: none; stroke-width: 1.8; }
+  .problem-card h4 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+  .problem-card p { font-size: 13px; color: var(--gray); line-height: 1.6; }
+  .problem-visual {
+    background: var(--navy3); border: 0.5px solid var(--border); border-radius: 16px;
+    padding: 2rem; text-align: center;
+  }
+  .thermal-chart { margin: 1.5rem 0; }
+  .chart-title { font-size: 13px; color: var(--gray); margin-bottom: 1rem; }
+  .chart-bars { display: flex; align-items: flex-end; gap: 8px; height: 140px; justify-content: center; }
+  .chart-bar-wrap { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .chart-bar { width: 52px; border-radius: 6px 6px 0 0; position: relative; }
+  .bar-safe { background: rgba(26,111,212,0.5); border: 0.5px solid var(--blue); }
+  .bar-warn { background: rgba(239,158,0,0.5); border: 0.5px solid #ef9e00; }
+  .bar-danger { background: rgba(226,75,74,0.5); border: 0.5px solid #e24b4a; }
+  .bar-label { font-size: 11px; color: var(--gray); }
+  .bar-temp { font-size: 11px; font-weight: 600; }
+  .safe-line {
+    border-top: 1px dashed var(--blue3); margin: 0.75rem 0;
+    position: relative;
+  }
+  .safe-line-label { font-size: 11px; color: var(--blue3); }
+  .danger-alert {
+    background: rgba(226,75,74,0.1); border: 0.5px solid rgba(226,75,74,0.4);
+    border-radius: 8px; padding: 0.75rem 1rem; margin-top: 1rem;
+    font-size: 13px; color: #f09595; font-weight: 500;
+  }
+
+  /* SOLUTION */
+  .solution { max-width: 1100px; margin: 0 auto; }
+  .solution-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3.5rem; }
+  .solution-card {
+    background: var(--navy2); border: 0.5px solid var(--border);
+    border-radius: 16px; padding: 2rem;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .solution-card:hover { border-color: var(--blue); transform: translateY(-3px); }
+  .solution-card-icon {
+    width: 52px; height: 52px; background: rgba(26,111,212,0.15);
+    border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem;
+  }
+  .solution-card-icon svg { width: 26px; height: 26px; stroke: var(--blue3); fill: none; stroke-width: 1.8; }
+  .solution-card h3 { font-size: 17px; font-weight: 700; margin-bottom: 0.6rem; }
+  .solution-card p { font-size: 14px; color: var(--gray); line-height: 1.65; }
+  .solution-card .tag {
+    display: inline-block; background: rgba(26,111,212,0.1); border: 0.5px solid var(--border);
+    color: var(--blue3); padding: 0.25rem 0.65rem; border-radius: 100px;
+    font-size: 11px; font-weight: 600; margin-top: 1rem;
+  }
+
+  /* TECHNOLOGY */
+  .technology { background: var(--navy2); }
+  .technology-inner { max-width: 1100px; margin: 0 auto; }
+  .tech-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; margin-top: 3.5rem; }
+  .tech-content {}
+  .tech-points { display: flex; flex-direction: column; gap: 1.25rem; margin-top: 2rem; }
+  .tech-point { display: flex; gap: 1rem; align-items: flex-start; }
+  .tech-point-num {
+    width: 28px; height: 28px; background: rgba(26,111,212,0.15); border: 0.5px solid var(--border);
+    border-radius: 6px; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; color: var(--blue3); flex-shrink: 0;
+  }
+  .tech-point h4 { font-size: 15px; font-weight: 600; margin-bottom: 3px; }
+  .tech-point p { font-size: 13px; color: var(--gray); line-height: 1.6; }
+  .tech-visual {
+    background: var(--navy3); border: 0.5px solid var(--border);
+    border-radius: 16px; padding: 2rem;
+  }
+  .tech-visual-title { font-size: 14px; font-weight: 600; margin-bottom: 1.5rem; color: var(--gray); }
+  .energy-comparison { display: flex; flex-direction: column; gap: 1rem; }
+  .energy-row { display: flex; flex-direction: column; gap: 6px; }
+  .energy-row-label { display: flex; justify-content: space-between; font-size: 13px; }
+  .energy-row-name { color: var(--white); font-weight: 500; }
+  .energy-row-val { color: var(--blue3); font-weight: 700; }
+  .energy-bar-bg { background: rgba(255,255,255,0.06); border-radius: 4px; height: 8px; overflow: hidden; }
+  .energy-bar-fill { height: 100%; border-radius: 4px; }
+  .sabers-note {
+    background: rgba(26,111,212,0.08); border: 0.5px solid rgba(26,111,212,0.3);
+    border-radius: 10px; padding: 1rem; margin-top: 1.5rem;
+    font-size: 13px; color: var(--blue4); line-height: 1.6;
+  }
+
+  /* TEAM */
+  .team-inner { max-width: 1100px; margin: 0 auto; }
+  .team-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 3.5rem; }
+  .team-card {
+    background: var(--navy2); border: 0.5px solid var(--border); border-radius: 16px; padding: 2rem;
+  }
+  .team-avatar {
+    width: 64px; height: 64px; background: var(--blue); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; font-weight: 800; color: white; margin-bottom: 1.25rem;
+  }
+  .team-card h3 { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+  .team-card .role { font-size: 14px; color: var(--blue3); font-weight: 600; margin-bottom: 1rem; }
+  .team-card p { font-size: 14px; color: var(--gray); line-height: 1.65; }
+  .team-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 1.25rem; }
+  .team-tag {
+    background: rgba(26,111,212,0.1); border: 0.5px solid var(--border);
+    color: var(--blue4); padding: 0.25rem 0.65rem; border-radius: 100px; font-size: 12px;
+  }
+  .mission-card {
+    background: var(--navy2); border: 0.5px solid var(--border); border-radius: 16px; padding: 2.5rem;
+    text-align: center;
+  }
+  .mission-card p { font-size: 1.15rem; color: var(--white); line-height: 1.7; font-style: italic; }
+  .mission-card .author { font-size: 13px; color: var(--gray); margin-top: 1rem; }
+
+  /* CONTACT */
+  .contact { background: var(--navy2); }
+  .contact-inner { max-width: 700px; margin: 0 auto; text-align: center; }
+  .contact-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 3rem; }
+  .contact-card {
+    background: var(--navy3); border: 0.5px solid var(--border); border-radius: 12px; padding: 1.5rem;
+    text-align: center; text-decoration: none; transition: border-color 0.2s, transform 0.15s;
+  }
+  .contact-card:hover { border-color: var(--blue); transform: translateY(-2px); }
+  .contact-card-icon { font-size: 24px; margin-bottom: 0.75rem; }
+  .contact-card h4 { font-size: 14px; font-weight: 600; color: var(--white); margin-bottom: 4px; }
+  .contact-card p { font-size: 12px; color: var(--gray); }
+
+  /* FOOTER */
+  footer {
+    background: var(--navy); border-top: 0.5px solid var(--border);
+    padding: 3rem 4rem;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 1rem;
+  }
+  .footer-logo { font-size: 16px; font-weight: 700; color: var(--white); }
+  .footer-right { font-size: 13px; color: var(--gray); }
+  .footer-links { display: flex; gap: 2rem; }
+  .footer-links a { font-size: 13px; color: var(--gray); text-decoration: none; }
+  .footer-links a:hover { color: var(--white); }
+
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    section { padding: 4rem 1.5rem; }
+    .stats-bar { grid-template-columns: repeat(2, 1fr); padding: 2rem 1.5rem; }
+    .problem-grid, .tech-grid, .team-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .solution-grid { grid-template-columns: 1fr; }
+    .contact-cards { grid-template-columns: 1fr; }
+    footer { flex-direction: column; text-align: center; padding: 2rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="logo-icon" style="background:transparent; width:44px; height:44px;">
+      <svg viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg" width="44" height="44">
+        <!-- Bolt / lightning bolt shape in electric blue -->
+        <defs>
+          <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#4fa3ff;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#1a6fd4;stop-opacity:1" />
+          </linearGradient>
+        </defs>
+        <!-- Wing shape left -->
+        <path d="M4 26 L18 10 L22 18 L10 28 Z" fill="url(#logoGrad)" opacity="0.85"/>
+        <!-- Wing shape right -->
+        <path d="M40 26 L26 10 L22 18 L34 28 Z" fill="url(#logoGrad)" opacity="0.6"/>
+        <!-- Center fuselage bolt -->
+        <path d="M22 6 L16 22 L20 22 L14 38 L28 20 L23 20 Z" fill="url(#logoGrad)"/>
+      </svg>
+    </div>
+    <span style="font-size:19px; font-weight:800; letter-spacing:-0.5px;">Flight<span style="color:var(--blue3);">Sabers</span></span>
+  </a>
+  <div class="nav-links">
+    <a href="#problem">The Problem</a>
+    <a href="#solution">Our Solution</a>
+    <a href="#technology">Technology</a>
+    <a href="#team">Team</a>
+    <a href="#contact" class="nav-cta">Get in Touch</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-badge">
+    <div class="badge-dot"></div>
+    Building the future of electric aviation infrastructure
+  </div>
+  <h1>Power the <span>Electric Aviation</span> Revolution</h1>
+  <p class="hero-sub">FlightSabers is developing the battery thermal management systems, power distribution units, and ground charging infrastructure that make long-haul electric flight possible.</p>
+  <div class="hero-actions">
+    <a href="#solution" class="btn-primary">
+      Explore Our Technology
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+    <a href="#contact" class="btn-secondary">Partner With Us</a>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat-item">
+    <div class="stat-number">2 MW</div>
+    <div class="stat-label">Charging power required for commercial aircraft turnaround</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number">30–40 min</div>
+    <div class="stat-label">Turnaround time regional aviation demands</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number">500+ Wh/kg</div>
+    <div class="stat-label">Energy density threshold for long-haul electric flight</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number">100–500 km</div>
+    <div class="stat-label">Range limit of today's battery-electric aircraft</div>
+  </div>
+</div>
+
+<!-- PROBLEM -->
+<section class="problem" id="problem">
+  <div class="problem-inner">
+    <div class="section-badge">The Problem</div>
+    <h2 class="section-title">Electric aviation is being held back by an <span>infrastructure gap</span></h2>
+    <p class="section-sub">The physics of electric flight are proven. The thermal management, power distribution, and charging infrastructure to operate it commercially does not exist yet.</p>
+
+    <div class="problem-grid">
+      <div class="problem-cards">
+        <div class="problem-card">
+          <div class="problem-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2v10l4 2"/><circle cx="12" cy="12" r="10"/></svg>
+          </div>
+          <div>
+            <h4>Thermal limits cap charging speed</h4>
+            <p>Heat generation scales with the square of charge rate. Megawatt-level fast charging drives cells beyond safe operating temperatures long before commercial turnaround windows are met.</p>
+          </div>
+        </div>
+        <div class="problem-card">
+          <div class="problem-icon">
+            <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          </div>
+          <div>
+            <h4>Airport infrastructure doesn't exist</h4>
+            <p>Commercial electric aviation requires 1.5–2 megawatts of charging power per aircraft stand. Today's airports and electrical grids were never designed to deliver that.</p>
+          </div>
+        </div>
+        <div class="problem-card">
+          <div class="problem-icon">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </div>
+          <div>
+            <h4>No aviation-grade solution exists</h4>
+            <p>Automotive thermal management systems are too heavy for aviation. No system designed specifically for aviation-grade battery fast charging exists today.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="problem-visual">
+        <p style="font-size:14px; font-weight:600; margin-bottom:1.5rem; color:var(--gray);">Charging power — today's infrastructure vs. aviation requirements</p>
+        <div style="display:flex; align-items:flex-end; gap:8px; height:180px; justify-content:center; padding-top:30px;">
+          <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
+            <div style="width:52px; height:25px; border-radius:6px 6px 0 0; background:rgba(136,153,187,0.35); border:0.5px solid var(--gray); position:relative;">
+              <span style="position:absolute; top:-22px; left:50%; transform:translateX(-50%); font-size:11px; font-weight:600; color:var(--gray); white-space:nowrap;">350 kW</span>
+            </div>
+            <span style="font-size:11px; color:var(--gray);">EV fast charger</span>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
+            <div style="width:52px; height:70px; border-radius:6px 6px 0 0; background:rgba(26,111,212,0.35); border:0.5px solid var(--blue); position:relative;">
+              <span style="position:absolute; top:-22px; left:50%; transform:translateX(-50%); font-size:11px; font-weight:600; color:#4fa3ff; white-space:nowrap;">1 MW</span>
+            </div>
+            <span style="font-size:11px; color:var(--gray);">MCS trucking</span>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
+            <div style="width:52px; height:120px; border-radius:6px 6px 0 0; background:var(--blue); border:0.5px solid var(--blue3); position:relative;">
+              <span style="position:absolute; top:-22px; left:50%; transform:translateX(-50%); font-size:11px; font-weight:600; color:#4fa3ff; white-space:nowrap;">2 MW</span>
+            </div>
+            <span style="font-size:11px; color:var(--gray);">Electric aircraft</span>
+          </div>
+        </div>
+        <div style="background: rgba(26,111,212,0.08); border: 0.5px solid rgba(26,111,212,0.3); border-radius: 8px; padding: 0.75rem 1rem; margin-top: 1.5rem; font-size: 13px; color: var(--blue4); line-height: 1.6;">
+          The gap between today's charging infrastructure and aviation requirements — in power delivery, thermal management, and grid capacity — is the market FlightSabers is building for.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUTION -->
+<section id="solution">
+  <div class="solution">
+    <div style="max-width:1100px; margin:0 auto;">
+      <div class="section-badge">Our Solution</div>
+      <h2 class="section-title">The complete electric aviation <span>power ecosystem</span></h2>
+      <p class="section-sub">FlightSabers is building three integrated systems that together solve the thermal, power distribution, and ground charging challenges of electric aviation.</p>
+
+      <div class="solution-grid">
+        <div class="solution-card">
+          <div class="solution-card-icon">
+            <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+          </div>
+          <h3>Battery Thermal Management System</h3>
+          <p>Aviation-grade active cooling architecture engineered specifically for solid-state lithium-sulfur cells. Maintains safe cell temperatures throughout 30-minute fast charge cycles within strict aviation weight budgets.</p>
+          <span class="tag">Core Product</span>
+        </div>
+        <div class="solution-card">
+          <div class="solution-card-icon">
+            <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          </div>
+          <h3>Power Distribution Unit</h3>
+          <p>High-voltage DC power distribution architecture connecting battery pack to propulsion motors. Redundant safety systems, solid-state circuit protection, and fault-tolerant design for aviation certification.</p>
+          <span class="tag">In Development</span>
+        </div>
+        <div class="solution-card">
+          <div class="solution-card-icon">
+            <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          </div>
+          <h3>Ground Charging Infrastructure</h3>
+          <p>Megawatt-level airport charging systems with intelligent power management. Battery energy storage buffers grid constraints while delivering 1.5-2 MW charging power for commercial turnaround times.</p>
+          <span class="tag">Roadmap</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VISION BAND -->
+<div style="position:relative; width:100%; height:480px; overflow:hidden;">
+  <img src="images/charging.jpg" alt="Megawatt aircraft charging infrastructure concept" style="width:100%; height:100%; object-fit:cover; object-position:center 55%; display:block;">
+  <div style="position:absolute; inset:0; background:linear-gradient(180deg, var(--navy) 0%, rgba(10,15,30,0.05) 20%, rgba(10,15,30,0.05) 75%, var(--navy2) 100%);"></div>
+  <div style="position:absolute; bottom:2.5rem; left:0; right:0; text-align:center; padding:0 2rem;">
+    <p style="font-size:15px; font-weight:600; color:var(--white); margin-bottom:4px;">Megawatt charging at every gate</p>
+    <p style="font-size:13px; color:var(--blue4);">Concept visualization — the airport infrastructure FlightSabers is building toward</p>
+  </div>
+</div>
+
+<!-- TECHNOLOGY -->
+<section class="technology" id="technology">
+  <div class="technology-inner">
+    <div class="section-badge">Technology Foundation</div>
+    <h2 class="section-title">Built on NASA's breakthrough <span>SABERS technology</span></h2>
+    <p class="section-sub">FlightSabers is pursuing a research license for NASA's SABERS solid-state lithium-sulfur battery technology — the most advanced aviation battery chemistry in existence.</p>
+
+    <div class="tech-grid">
+      <div class="tech-content">
+        <div class="tech-points">
+          <div class="tech-point">
+            <div class="tech-point-num">01</div>
+            <div>
+              <h4>500+ Wh/kg energy density</h4>
+              <p>NASA SABERS cells achieve over 500 Wh/kg — nearly double conventional lithium-ion. This energy density is the threshold that makes long-haul electric aviation viable.</p>
+            </div>
+          </div>
+          <div class="tech-point">
+            <div class="tech-point-num">02</div>
+            <div>
+              <h4>Solid-state electrolyte — no thermal runaway</h4>
+              <p>Replacing flammable liquid electrolyte with a solid composite eliminates the primary thermal runaway risk — the most critical aviation battery safety concern.</p>
+            </div>
+          </div>
+          <div class="tech-point">
+            <div class="tech-point-num">03</div>
+            <div>
+              <h4>Graphene scaffold architecture</h4>
+              <p>Sulfur-selenium cathode on graphene scaffold enables lightweight bipolar cell stacking — reducing pack weight while maximizing energy density.</p>
+            </div>
+          </div>
+          <div class="tech-point">
+            <div class="tech-point-num">04</div>
+            <div>
+              <h4>FlightSabers system integration</h4>
+              <p>We don't develop cell chemistry — we build the complete thermal management and power systems that make SABERS cells fly safely in commercial aircraft.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tech-visual">
+        <img src="images/battery.jpg" alt="Liquid-cooled aviation battery module concept" style="width:100%; border-radius:10px; border:0.5px solid var(--border); display:block; margin-bottom:0.6rem;">
+        <p style="font-size:12px; color:var(--gray); margin-bottom:1.5rem; font-style:italic;">Concept visualization — liquid-cooled aviation battery module</p>
+        <p class="tech-visual-title">Energy density comparison — Wh/kg</p>
+        <div class="energy-comparison">
+          <div class="energy-row">
+            <div class="energy-row-label">
+              <span class="energy-row-name">Conventional Li-ion (NMC)</span>
+              <span class="energy-row-val">250 Wh/kg</span>
+            </div>
+            <div class="energy-bar-bg">
+              <div class="energy-bar-fill" style="width:50%; background:rgba(26,111,212,0.4);"></div>
+            </div>
+          </div>
+          <div class="energy-row">
+            <div class="energy-row-label">
+              <span class="energy-row-name">Amprius Silicon Anode</span>
+              <span class="energy-row-val">450 Wh/kg</span>
+            </div>
+            <div class="energy-bar-bg">
+              <div class="energy-bar-fill" style="width:70%; background:rgba(26,111,212,0.6);"></div>
+            </div>
+          </div>
+          <div class="energy-row">
+            <div class="energy-row-label">
+              <span class="energy-row-name" style="color:var(--blue3); font-weight:600;">NASA SABERS (target)</span>
+              <span class="energy-row-val" style="color:var(--blue3);">500+ Wh/kg</span>
+            </div>
+            <div class="energy-bar-bg">
+              <div class="energy-bar-fill" style="width:100%; background:var(--blue);"></div>
+            </div>
+          </div>
+          <div class="energy-row">
+            <div class="energy-row-label">
+              <span class="energy-row-name">Long-haul aviation requirement</span>
+              <span class="energy-row-val" style="color:var(--gray);">500-800 Wh/kg</span>
+            </div>
+            <div class="energy-bar-bg">
+              <div class="energy-bar-fill" style="width:100%; background:rgba(255,255,255,0.08); border: 0.5px dashed rgba(255,255,255,0.2);"></div>
+            </div>
+          </div>
+        </div>
+        <div class="sabers-note">
+          NASA SABERS is currently at TRL 4 with successful coin cell and pouch prototype demonstrations. FlightSabers is pursuing a research license to commercialize this technology for aviation applications.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section id="team">
+  <div class="team-inner">
+    <div class="section-badge">Team</div>
+    <h2 class="section-title">Built by aerospace engineers who understand <span>safety-critical systems</span></h2>
+    <p class="section-sub">FlightSabers combines aerospace engineering expertise with hands-on experience in high-energy thermal and pressure management systems.</p>
+
+    <div class="team-grid" style="margin-top:3.5rem;">
+      <div class="team-card">
+        <div class="team-avatar">RP</div>
+        <h3>Rudra Patel</h3>
+        <div class="role">Founder & CEO</div>
+        <p>Aerospace engineer with two years designing safety-critical high-pressure thermal systems at ARC Automotive. Experience in pressure vessel design, DFMEA, hydro-burst testing, and production-level hardware development. BS Aerospace Engineering, University of Tennessee Knoxville.</p>
+        <div class="team-tags">
+          <span class="team-tag">Aerospace Engineering</span>
+          <span class="team-tag">Thermal Systems</span>
+          <span class="team-tag">DFMEA</span>
+          <span class="team-tag">SolidWorks</span>
+          <span class="team-tag">ANSYS</span>
+          <span class="team-tag">MATLAB</span>
+        </div>
+      </div>
+      <div class="mission-card" style="background:var(--navy2); border:0.5px solid var(--border); border-radius:16px; padding:2.5rem; display:flex; flex-direction:column; justify-content:center;">
+        <div style="font-size:40px; margin-bottom:1.5rem; color:var(--blue3);">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        </div>
+        <p style="font-size:1.1rem; color:var(--white); line-height:1.75; font-style:italic;">"The physics of electric aviation are solved. The infrastructure to support it is not. FlightSabers exists to build that infrastructure — starting with the thermal management systems that let batteries charge fast enough for commercial operations."</p>
+        <div style="font-size:13px; color:var(--gray); margin-top:1.5rem; font-weight:500;">— Rudra Patel, Founder</div>
+        <div style="margin-top:2rem; padding-top:1.5rem; border-top:0.5px solid var(--border);">
+          <div style="font-size:12px; color:var(--gray); margin-bottom:0.75rem; text-transform:uppercase; letter-spacing:0.08em; font-weight:600;">We are actively seeking</div>
+          <div style="display:flex; flex-wrap:wrap; gap:8px;">
+            <span style="background:rgba(26,111,212,0.1); border:0.5px solid var(--border); color:var(--blue4); padding:0.3rem 0.75rem; border-radius:100px; font-size:12px;">Research Partners</span>
+            <span style="background:rgba(26,111,212,0.1); border:0.5px solid var(--border); color:var(--blue4); padding:0.3rem 0.75rem; border-radius:100px; font-size:12px;">Technical Advisors</span>
+            <span style="background:rgba(26,111,212,0.1); border:0.5px solid var(--border); color:var(--blue4); padding:0.3rem 0.75rem; border-radius:100px; font-size:12px;">Early Investors</span>
+            <span style="background:rgba(26,111,212,0.1); border:0.5px solid var(--border); color:var(--blue4); padding:0.3rem 0.75rem; border-radius:100px; font-size:12px;">University Partners</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="contact-inner">
+    <div class="section-badge">Contact</div>
+    <h2 class="section-title">Let's build the future of <span>electric aviation</span> together</h2>
+    <p class="section-sub" style="margin:0 auto; text-align:center;">Whether you're a researcher, investor, university partner, or aviation company — we want to hear from you.</p>
+
+    <div class="contact-cards">
+      <a href="mailto:rudra@flightsabers.com" class="contact-card">
+        <div class="contact-card-icon">✉</div>
+        <h4>Email Us</h4>
+        <p>rudra@flightsabers.com</p>
+      </a>
+      <a href="https://linkedin.com/company/flightsabers" class="contact-card">
+        <div class="contact-card-icon">in</div>
+        <h4>LinkedIn</h4>
+        <p>FlightSabers LLC</p>
+      </a>
+      <a href="#" class="contact-card">
+        <div class="contact-card-icon">📍</div>
+        <h4>Location</h4>
+        <p>Austin, Texas</p>
+      </a>
+    </div>
+
+    <div style="margin-top:3rem; text-align:center;">
+      <a href="mailto:rudra@flightsabers.com" class="btn-primary" style="font-size:16px; padding:1rem 2.5rem;">
+        Get in Touch
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">⚡ FlightSabers</div>
+  <div class="footer-links">
+    <a href="#problem">Problem</a>
+    <a href="#solution">Solution</a>
+    <a href="#technology">Technology</a>
+    <a href="#team">Team</a>
+    <a href="#contact">Contact</a>
+  </div>
+  <div class="footer-right">© 2026 Ardur Tims Aviation LLC · DBA FlightSabers · Austin, Texas · All rights reserved</div>
+</footer>
+
+</body>
+</html>
